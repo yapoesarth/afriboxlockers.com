@@ -1,0 +1,51 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: afribox-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-afribox}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-changeme}
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - afribox-net
+    # Uncomment if you want to connect from the host (MongoDB Compass, etc.)
+    # ports:
+    #   - "27017:27017"
+
+  backend:
+    build:
+      context: ./backend
+    container_name: afribox-backend
+    restart: unless-stopped
+    environment:
+      MONGO_URL: mongodb://${MONGO_USER:-afribox}:${MONGO_PASSWORD:-changeme}@mongo:27017/?authSource=admin
+      DB_NAME: ${DB_NAME:-afribox}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+    depends_on:
+      - mongo
+    networks:
+      - afribox-net
+    # Uncomment to hit the API directly from the host on http://localhost:8000
+    # ports:
+    #   - "8000:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: afribox-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    depends_on:
+      - backend
+    networks:
+      - afribox-net
+
+volumes:
+  mongo-data:
+
+networks:
+  afribox-net:
+    driver: bridge

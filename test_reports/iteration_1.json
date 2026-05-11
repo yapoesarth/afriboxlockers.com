@@ -1,0 +1,55 @@
+{
+  "summary": "Full-stack testing of AFRIBOX cinematic locker MVP. Backend: 9/9 pytest tests passed against the public REACT_APP_BACKEND_URL (root service info, lockers seed, newsletter create/duplicate/invalid, booking create/missing-field/list, contact create, _id exclusion). Frontend: hero loads with HUD brand AFRIBOX, SYSTEM ONLINE pill, headline 'The future of parcel lives inside the city.', 6-item nav, 5x4=20 lockers rendered, scroll-progress bar present. Nav click smooth-scrolls into cinematic section (y 0 -> 2210). Post-cinematic LockerMap renders 10 station pins; station-detail panel updates on pin click; Booking form submission to POST /api/booking returns success toast and clears form; Newsletter POST /api/newsletter returns success toast and clears email. Zero console errors during full flow.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "LockerMap pins",
+        "issue": "Pins for stations in the same city overlap because lat/lon are very close and the linear projection (minLon=-20..50, minLat=-10..25) compresses them onto the same screen pixel. Verified: clicking [data-testid=pin-stn-dkr-01] (Plateau Hub Dakar) and [data-testid=pin-stn-cmn-01] (Centre-Ville Casablanca) both end up showing 'Almadies Node' because the click hits whichever pin is rendered last on top. Same overlap exists for Lagos (lgs-01 Victoria Island vs lgs-02 Lekki). Pin selection is therefore non-deterministic for clustered stations.",
+        "selector": "[data-testid^=pin-stn-]",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "LockerMap (network section)",
+        "issues": [
+          "Some pins (e.g., Casablanca, Dakar) fall outside the stylised continent SVG outline because the SVG path is hand-drawn and not aligned with the lat/lon projection bounds.",
+          "Booking submit button visually slipped under the top HUD nav glass when the section was scrolled into view via scrollIntoView (cosmetic; happens only at scroll alignment, no functional impact)."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_afribox_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Fix overlapping LockerMap pins: either jitter/offset coincident pins (e.g., spiderfy/cluster) or use a per-city tighter projection so stations in the same district remain individually clickable.",
+    "(Optional) Refine the continent SVG path or replace with a real Africa shape so pins fall on land for visual polish."
+  ],
+  "critical_code_review_comments": [
+    "Backend server.py is well structured: all endpoints prefixed under /api router, all responses exclude _id (via Pydantic model_dump and query projection {_id:0}), uses uuid string ids, datetime stored as ISO string and re-hydrated. Uniqueness on newsletter is handled at app layer (find_one then insert) — note this is racy under concurrency; consider a Mongo unique index on email for hard guarantee.",
+    "Scene.jsx is large (~500 lines) and mixes camera math, overlay components, HUD rendering, and ambient effects. Could be split into Scene + SectionOverlay + HeroOverlay + FloatingHUD modules for maintainability.",
+    "axios is used directly without a shared instance / interceptor — fine for MVP, but a lib/api.js wrapper would centralise base URL + error handling.",
+    "All required data-testid attributes per the spec are present and verified (cinematic-scene, hero, hud-brand, hud-status, hud-nav, nav-{id}, scroll-progress, locker-map-section, locker-map, pin-{stationId}, station-detail, booking-section, booking-form, booking-name/email/phone/city/size/window/notes/submit, newsletter-section, newsletter-form, newsletter-email, newsletter-submit, footer).",
+    "CORS_ORIGINS='*' combined with allow_credentials=True can be problematic in some browsers; for MVP it works, but for production restrict origins."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_afribox_api.py"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "95%"
+  },
+  "test_credentials": "n/a — no auth in this MVP. Newsletter test emails use TEST_*@afribox.io.",
+  "seed_data_creation": "Backend seeds 10 LockerStation entries from SEED_STATIONS in server.py (returned directly, no DB writes). Test created several TEST_*@afribox.io newsletter, booking, and contact records under the test_database Mongo DB.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend test suite at /app/backend/tests/test_afribox_api.py covers all 5 routes (root, lockers, newsletter, booking, contact). Run with: REACT_APP_BACKEND_URL=$(grep REACT_APP_BACKEND_URL /app/frontend/.env | cut -d= -f2) python -m pytest /app/backend/tests/test_afribox_api.py -v. Frontend cinematic stage is sticky 100vh inside ~760vh wrapper; scroll into cinematic gradually to exercise camera transforms; post-cinematic content (LockerMap, BookingForm, Newsletter, Footer) is below — scroll to bottom to access. Use isolated pins (e.g., Lagos-1 vs Casablanca) only when validating different-city pin behaviour because same-city pins overlap and produce non-deterministic clicks.",
+  "rca of the issue": "Pin overlap RCA: in CityFeatures.jsx LockerMap.project(lat, lon) uses a linear projection across minLon=-20..50 and minLat=-10..25 (range 70°x35°) onto a ~700px wide map, so 1° ~= 10px. Stations within the same district (e.g., Dakar Plateau vs Almadies are <0.07° apart in longitude) translate to <1px screen distance — they sit on top of each other and the absolute-positioned <button> elements stack with the last-rendered one capturing pointer events. Mitigation: detect coincident points and apply a small angular offset around the cluster centroid (spider/jitter), or render an aggregated cluster marker that expands on hover/click."
+}

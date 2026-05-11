@@ -1,0 +1,103 @@
+{
+  "theme_and_archetype": {
+    "theme": "dark",
+    "archetype": "Archetype 5 (Jewel & Luxury) with elements of Archetype 4 (Swiss & High-Contrast)",
+    "description": "A premium industrial technology aesthetic, inspired by high-end presentations (Apple/Tesla). It merges deep graphite/charcoal textures with glowing emerald and cyan-green LED accents. It prioritizes realistic materials (brushed metal, glass) and fluid, cinematic scroll storytelling over exaggerated sci-fi tropes."
+  },
+  "typography": {
+    "headings": {
+      "family": "Outfit",
+      "weights": ["300", "500", "700"],
+      "usage": "Use for primary section titles and elegant, cinematic text layers. Tracking should be slightly tight for large scales."
+    },
+    "body": {
+      "family": "Manrope",
+      "weights": ["400", "500"],
+      "usage": "Clean, highly readable geometric sans for paragraphs and UI copy."
+    },
+    "technical_indicators": {
+      "family": "JetBrains Mono",
+      "weights": ["400"],
+      "usage": "Use for digital indicators, timestamps, HUD overlays, and locker numbers. Monospaced."
+    }
+  },
+  "color_palette": {
+    "backgrounds": {
+      "base": "#0A0A0A",
+      "locker_surface": "#141416",
+      "locker_interior": "#050505",
+      "glass_overlay": "rgba(20, 20, 22, 0.7)"
+    },
+    "accents": {
+      "emerald": "#10B981",
+      "emerald_glow": "rgba(16, 185, 129, 0.4)",
+      "mint": "#2DD4BF",
+      "cyan_green": "#7CFFB2"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "#A1A1AA",
+      "hud_indicator": "#2DD4BF"
+    },
+    "borders": {
+      "subtle": "rgba(255, 255, 255, 0.08)",
+      "active_glow": "rgba(45, 212, 191, 0.3)"
+    }
+  },
+  "layout_and_spacing": {
+    "spacing_scale": "Tailwind's generous spacing (e.g., p-12, p-24, gap-16) to create breathing room between cinematic transitions.",
+    "locker_grid_composition": "A massive CSS Grid of lockers (e.g., 5x4 layout) set inside a wrapper with `perspective: 2000px`. Each locker item acts as a structural portal.",
+    "depth_and_perspective": "Use CSS 3D transforms (`translateZ`, `rotateX`, `rotateY`). As the user scrolls, the parent wrapper scales and translates in 3D space (`translateZ(1500px)`) to simulate the camera flying through a specific locker door.",
+    "mobile_fallback": "For screens < 768px, disable the heavy 3D fly-through. Fall back to a refined vertical scroll where each locker 'door' opens as an accordion or simple slide-in to reveal its section. Maintain the metallic texture and LED aesthetic."
+  },
+  "motion_and_interactions": {
+    "scroll_choreography": "Bind scroll position to CSS transforms using `framer-motion` (`useScroll`, `useTransform`).",
+    "easing": "Use smooth, slow cinematic easing. E.g., `cubic-bezier(0.25, 0.1, 0.25, 1)` or `spring` with high damping and low stiffness.",
+    "locker_door": "The target locker door should animate open (`rotateY(-110deg)`) using `transform-origin: left` to reveal the next section of the site hidden inside.",
+    "ambient_animations": "Keyframes for breathing LEDs (`opacity: 0.5` to `1`), subtle shifting light glints on the metallic surfaces (via moving linear-gradients), and blinking digital availability indicators."
+  },
+  "components_strategy": {
+    "structure": "Custom HTML/Tailwind and framer-motion for the massive 3D scroll scene and locker portals.",
+    "ui_overlays": "Floating HUD elements (fixed on screen) using Glassmorphism (`backdrop-blur-xl`, `bg-black/40`, `border-white/10`).",
+    "forms_and_data": "Use Shadcn UI for the Booking Request flow, Newsletter signup, and the interactive Locker Availability Map. Customize Shadcn borders to be `border-white/10` and inputs to be `bg-white/5`."
+  },
+  "media": {
+    "images": [
+      {
+        "category": "locker_wall_hero",
+        "url": "https://static.prod-images.emergentagent.com/jobs/3fbae39c-6681-44a6-9200-ae482129a9c6/images/f82bfe0fccbddd62b00c35ded2551682b39b36b074847acbe8d8cbd2eb02cc74.png",
+        "description": "Premium futuristic smart locker wall with dark brushed metal and emerald LED glow. Use as the massive structural background or texture for the 3D CSS grid."
+      },
+      {
+        "category": "locker_interior",
+        "url": "https://static.prod-images.emergentagent.com/jobs/3fbae39c-6681-44a6-9200-ae482129a9c6/images/250c6c5b7b9f9da99938ac518af613e69e7687b4579ecdccc94c44e923450490.png",
+        "description": "Graphite interior of an open locker with mint LED lighting. Use as the background revealed when a locker door flies open."
+      },
+      {
+        "category": "smart_city_bg",
+        "url": "https://static.prod-images.emergentagent.com/jobs/3fbae39c-6681-44a6-9200-ae482129a9c6/images/80f893fdf709ee77ea1142b8cc487fa42801ec7d721151857817c3adf724cb93.png",
+        "description": "Cinematic night photography of a modern smart city. Use in the 'Smart City Integration' section."
+      },
+      {
+        "category": "app_interface_mockup",
+        "url": "https://static.prod-images.emergentagent.com/jobs/3fbae39c-6681-44a6-9200-ae482129a9c6/images/423cd386612bd1f0045a2c4ad11fae18a91b6f1f7d1761e29311920336f68df4.png",
+        "description": "Sleek smartphone displaying dark UI. Use in the 'Mobile App' section."
+      },
+      {
+        "category": "abstract_metal",
+        "url": "https://images.pexels.com/photos/2203143/pexels-photo-2203143.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Abstract view of a modern industrial setting with teal lighting and metal structures. Great for the 'How it Works' or 'Security' sections."
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Do NOT use Three.js. The entire scene must be built with standard HTML/CSS and Framer Motion for scroll mapping.",
+    "Build a main wrapper with `style={{ perspective: '1200px' }}`.",
+    "Inside it, a `motion.div` representing the 'camera/world' which receives `translateZ`, `translateX`, and `translateY` transforms mapped to the window scroll.",
+    "Create a grid of 'Locker' components. As scroll progresses, the camera scales/zooms into one specific locker.",
+    "The target locker has a 'door' element that swings open on scroll (`rotateY(-110deg)`).",
+    "Once the camera moves 'inside' the locker, the opacity of the subsequent section's content fades in.",
+    "Implement floating HUDs (e.g., 'SYSTEM ONLINE', 'CAPACITY: 84%') in the corners of the screen using fixed positioning and `JetBrains Mono`.",
+    "Add test IDs (`data-testid`) to all interactive elements."
+  ]
+}

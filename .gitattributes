@@ -1,0 +1,19 @@
+# Force LF line endings on shell scripts so they run on the Linux VPS
+# even when committed from Windows.
+*.sh text eol=lf
+deploy.sh text eol=lf
+update.sh text eol=lf
+
+# Treat compose / config / docs as text with LF (safe on cross-platform)
+*.yml text eol=lf
+*.yaml text eol=lf
+*.conf text eol=lf
+*.md text eol=lf
+
+# Binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary

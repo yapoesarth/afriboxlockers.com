@@ -1,0 +1,112 @@
+# ──────────────────────────────────────────────────────────
+#  .gitignore — Afribox (repo public)
+# ──────────────────────────────────────────────────────────
+
+# ── Documents confidentiels (NE JAMAIS PUSHER) ──
+*.pdf
+VPS_ADMINISTRATION.md
+1_PROMPT_COMPORTEMENTAL.md
+2_MEMORY.md
+
+# ── Secrets & environnement ──
+.env
+.env.*
+*.env
+!.env.example
+!.env.prod.example
+credentials.json
+*token.json*
+*credentials.json*
+.credentials
+*.pem
+*.key
+secrets/
+
+# ── IDE / éditeurs ──
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ── Système ──
+.DS_Store
+Thumbs.db
+
+# ── Node / Yarn ──
+node_modules/
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ── Builds ──
+/build
+build/
+dist/
+dist
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# ── Python ──
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+.pytest_cache/
+.mypy_cache/
+
+# ── Tests ──
+/coverage
+
+# ── Dev tools ──
+chainlit.md
+.chainlit
+.ipynb_checkpoints/
+.ac
+.cache/
+
+# ── Deployment ──
+.vercel
+
+# ── Data ──
+dump.rdb
+agenthub/agents/youtube/db
+memory/test_credentials.md
+
+# ── Archives & gros assets ──
+**/*.zip
+**/*.tar.gz
+**/*.tar
+**/*.tgz
+*.pack
+*.deb
+*.dylib
+
+# ── Backups ──
+*.bak
+*.backup
+backup_*
+
+# ── Compose dev local (non destiné au VPS) ──
+# (docker-compose.dev.yml EST commité ; on n'exclut rien ici, ce commentaire
+#  sert juste à rappeler que c'est docker-compose.prod.yml qui tourne sur le VPS)
+
+# ── Mobile ──
+android-sdk/
+
+# ── Notes éphémères sauvegardées par le main agent ──
+# (l'agent peut écrire des fichiers de travail temporaires ici)
+.tmp/
+.scratch/
